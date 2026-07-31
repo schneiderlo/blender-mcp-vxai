@@ -1,0 +1,34 @@
+{
+  "asset_id": "stylized_builder_kit_v1",
+  "builder": "stylized_builder_kit",
+  "seed": 271828,
+  "description": "A modular construction-kit showcase inspired by the supplied reference: chunky softened stone blocks, loose rubble, warm carved timber planks, and exposed-end logs. The result must read as an actual reusable game asset kit rather than a concept painting.",
+  "style": {
+    "silhouette": "chunky, softly beveled, deliberately irregular",
+    "surface": "hand-painted low-poly impression with visible carved grain",
+    "palette": "warm amber wood, desaturated taupe stone, dark brown presentation background",
+    "lighting": "warm key, cool edge fill, subtle orange rim",
+    "camera": "orthographic asset-sheet framing"
+  },
+  "pieces": {
+    "minimum_primary_objects": 28,
+    "required_families": [
+      "stone_column",
+      "short_stone_wall",
+      "long_stone_wall",
+      "rubble",
+      "logs",
+      "planks",
+      "tall_beam"
+    ]
+  },
+  "budgets": {
+    "max_triangles": 80000,
+    "target_triangle_range": [12000, 50000]
+  },
+  "render": {
+    "width": 1536,
+    "height": 864,
+    "samples": 24
+  }
+}
