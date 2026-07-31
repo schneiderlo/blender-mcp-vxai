@@ -1,0 +1,73 @@
+name: Agentic Blender asset example
+
+on:
+  pull_request:
+    paths:
+      - "asset_factory/**"
+      - "examples/stylized_builder_kit/**"
+      - "tests/**"
+      - ".github/workflows/asset-factory-example.yml"
+      - "AGENTS.md"
+      - "docs/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-stylized-kit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install headless graphics libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libx11-6 libxi6 libxrender1 libxxf86vm1
+
+      - name: Install Blender Python module
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "bpy==5.2.0"
+          python - <<'PY'
+          import bpy
+          print("Blender:", bpy.app.version_string)
+          assert bpy.app.version >= (5, 2, 0)
+          PY
+
+      - name: Run contract tests and syntax checks
+        run: |
+          python -m compileall -q asset_factory tests
+          python -m unittest discover -s tests -v
+
+      - name: Build, render, validate, and export the real example
+        run: |
+          python -m asset_factory.cli build \
+            examples/stylized_builder_kit/asset.json \
+            --output out/stylized_builder_kit
+
+      - name: Show validation report
+        if: always()
+        run: |
+          if test -f out/stylized_builder_kit/validation.json; then
+            cat out/stylized_builder_kit/validation.json
+          fi
+
+      - name: Upload Blender job artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stylized-builder-kit
+          path: out/stylized_builder_kit
+          if-no-files-found: error
+          retention-days: 14
