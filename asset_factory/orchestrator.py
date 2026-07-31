@@ -100,6 +100,11 @@ def run_pipeline(spec_path: str | Path, output_dir: str | Path) -> dict[str, Any
     (output / "build_report.json").write_text(json.dumps(build_report, indent=2) + "\n", encoding="utf-8")
     events.emit(Stage.BUILD, "Blender construction complete", **build_report)
 
+    camera = bpy.context.scene.camera
+    if camera is not None and camera.type == "CAMERA" and "ortho_scale" in contract.render:
+        camera.data.ortho_scale = float(contract.render["ortho_scale"])
+        events.emit(Stage.PLAN, "Applied contract camera framing", ortho_scale=camera.data.ortho_scale)
+
     render_path = output / "diagnostics" / "beauty.png"
     events.emit(Stage.INSPECT, "Rendering diagnostic beauty view", path=str(render_path))
     render_still(render_path)
