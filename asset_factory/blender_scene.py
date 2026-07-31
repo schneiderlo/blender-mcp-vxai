@@ -599,7 +599,7 @@ def setup_presentation(
     )
 
     scene = bpy.context.scene
-    scene.render.engine = "BLENDER_EEVEE_NEXT"
+    scene.render.engine = "BLENDER_EEVEE"
     scene.render.resolution_x = int(render_width)
     scene.render.resolution_y = int(render_height)
     scene.render.resolution_percentage = 100
